@@ -11,7 +11,7 @@ This package aims to provide a mostly unopinionated interface for storing that s
 
 A demo extension can be found in `./example`.
 
-![](./demo.gif)
+![](https://github.com/vantezzen/plasmo-state/raw/main/demo.gif)
 
 ## Installation
 

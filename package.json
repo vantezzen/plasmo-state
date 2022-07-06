@@ -26,7 +26,7 @@
   "author": "vantezzen <hello@vantezzen.io>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vantezzen/plasmo-package-template.git"
+    "url": "https://github.com/vantezzen/plasmo-state.git"
   },
   "license": "MIT",
   "keywords": [
