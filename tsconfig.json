@@ -4,6 +4,7 @@
   "include": [".plasmo/**/*", "./**/*.ts", "./**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",
+    "incremental": false,
     "jsx": "react-jsx"
   }
 }

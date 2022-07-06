@@ -45,7 +45,7 @@ export default class State<T extends object> extends EventEmitter {
     this.setupDone = true
   }
 
-  #createSyncModule() {
+  #createSyncModule(): SyncModule<T> {
     if (
       this.#environment === StateEnvironment.Background ||
       this.#environment === StateEnvironment.Popup

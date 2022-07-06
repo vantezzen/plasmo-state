@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import type State from "~State"
+import type State from "./State"
 
 /**
  * Use a plasmo-state instance inside a react component
