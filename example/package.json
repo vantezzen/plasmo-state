@@ -1,0 +1,7 @@
+{
+  "name": "example",
+  "displayName": "Example",
+  "version": "1.0.0",
+  "description": "Example extension.",
+  "dependencies": {}
+}

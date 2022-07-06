@@ -1,0 +1,92 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "@plasmohq/storage",
+      "version": "0.6.4",
+      "description": "Safely store data and share them across your extension",
+      "type": "module",
+      "main": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "exports": {
+        "./hook": {
+          "types": "./dist/hook.d.ts",
+          "import": "./dist/hook.js"
+        },
+        ".": {
+          "import": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        }
+      },
+      "files": [
+        "dist"
+      ],
+      "scripts": {
+        "dev": "run-p dev:*",
+        "dev:compile": "tsup src/index.ts --format esm --watch --sourcemap",
+        "dev:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+        "build": "tsup src/index.ts --dts-resolve --format esm --minify --clean",
+        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+        "prepublishOnly": "pnpm build"
+      },
+      "author": "Plasmo Corp. <foss@plasmo.com>",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/PlasmoHQ/storage.git"
+      },
+      "license": "MIT",
+      "keywords": [
+        "localstorage",
+        "react-hook",
+        "browser-extension",
+        "chrome-storage"
+      ],
+      "peerDependencies": {
+        "react": "^16.8.6 || ^17 || ^18"
+      },
+      "devDependencies": {
+        "@jest/globals": "28.1.2",
+        "@jest/types": "28.1.1",
+        "@plasmohq/rps": "workspace:*",
+        "@testing-library/react": "13.3.0",
+        "@trivago/prettier-plugin-sort-imports": "3.2.0",
+        "@types/chrome": "0.0.191",
+        "@types/node": "18.0.1",
+        "@types/react": "18.0.14",
+        "cross-env": "7.0.3",
+        "jest": "28.1.2",
+        "jest-environment-jsdom": "28.1.2",
+        "prettier": "2.7.1",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "rimraf": "3.0.2",
+        "ts-jest": "28.0.5",
+        "tsup": "6.1.3",
+        "typescript": "4.7.4",
+        "plasmo": "canary"
+      }
+    },
+    "prefix": "/Users/bennetthollstein/LokaleProjekte/plasmo-synced-tab-values"
+  },
+  "2 debug pnpm:context": {
+    "currentLockfileExists": false,
+    "storeDir": "/Users/bennetthollstein/.pnpm-store/v3",
+    "virtualStoreDir": "/Users/bennetthollstein/LokaleProjekte/plasmo-synced-tab-values/node_modules/.pnpm"
+  },
+  "3 debug pnpm:stage": {
+    "prefix": "/Users/bennetthollstein/LokaleProjekte/plasmo-synced-tab-values",
+    "stage": "resolution_started"
+  },
+  "4 error pnpm": {
+    "code": "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
+    "pkgsStack": [],
+    "err": {
+      "name": "pnpm",
+      "message": "In : No matching version found for @plasmohq/rps@* inside the workspace",
+      "code": "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
+      "stack": "pnpm: In : No matching version found for @plasmohq/rps@* inside the workspace\n    at tryResolveFromWorkspace (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:85112:15)\n    at resolveNpm (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:85024:39)\n    at Object.resolve (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:85226:40)\n    at ctx.requestsQueue.add.priority (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:71277:75)\n    at run (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:71024:90)\n    at PQueue._tryToStartAnother (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:70978:13)\n    at /Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:71037:16\n    at new Promise (<anonymous>)\n    at PQueue.add (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:71019:16)\n    at resolveAndFetch (/Users/bennetthollstein/.nvm/versions/node/v14.17.5/lib/node_modules/pnpm/dist/pnpm.cjs:71277:55)"
+    }
+  }
+}
