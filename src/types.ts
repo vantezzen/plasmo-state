@@ -5,7 +5,6 @@ export enum StateEnvironment {
 }
 
 export type SetupConfig<T> = {
-  shared?: (keyof T)[]
   persistent?: (keyof T)[]
   tabId?: number
 }

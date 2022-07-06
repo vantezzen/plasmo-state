@@ -14,6 +14,8 @@ function IndexPopup() {
         padding: 16
       }}>
       <h1>Welcome!</h1>
+
+      <h2>Per Tab</h2>
       <p>{state.perTab}</p>
 
       <button
@@ -23,6 +25,15 @@ function IndexPopup() {
         }}>
         Increment
       </button>
+
+      <h2>Persistent</h2>
+      <input
+        type="text"
+        value={state.persistent}
+        onChange={(e) => {
+          state.persistent = e.target.value
+        }}
+      />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import EventEmitter from "events"
 
+import Persistence from "./Persistence"
 import ContentSyncModule from "./Sync/ContentSyncModule"
 import ExtensionSyncModule from "./Sync/ExtensionSyncModule"
 import type SyncModule from "./Sync/SyncModule"
@@ -10,6 +11,7 @@ export default class State<T extends object> extends EventEmitter {
   #state: T
   #environment: StateEnvironment
   #config: SetupConfig<T>
+  setupDone = false
 
   #syncModule: SyncModule<T>
 
@@ -25,6 +27,8 @@ export default class State<T extends object> extends EventEmitter {
     this.#state = initialState
     this.#config = config || {}
 
+    new Persistence(this)
+
     this.#setup()
   }
 
@@ -34,7 +38,8 @@ export default class State<T extends object> extends EventEmitter {
     }
 
     this.#syncModule = this.#createSyncModule()
-    this.#syncModule.pull()
+    await this.#syncModule.pull()
+    this.setupDone = true
   }
 
   #createSyncModule() {
@@ -71,8 +76,9 @@ export default class State<T extends object> extends EventEmitter {
     return this.#config.tabId
   }
 
-  get(key: keyof T) {
-    return this.#state[key]
+  keyIsPersistent(key: keyof T) {
+    if (!("persistent" in this.#config)) return false
+    return this.#config.persistent.includes(key)
   }
 
   replace(state: T) {

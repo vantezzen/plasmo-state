@@ -21,19 +21,17 @@ export default abstract class SyncModule<T extends object> {
   configUpdateListener(msg: SyncMessage<T>, sender: Runtime.MessageSender) {
     if (typeof msg !== "object" || msg.type !== "sync") return
 
-    if (this.state.tabId !== -1) {
-      debug("Checking tab id", this.state.tabId)
+    const senderTab = msg.tabId === -1 ? sender.tab?.id : msg.tabId
+    const isCurrentTab =
+      this.state.tabId === senderTab || this.state.tabId === -1
 
-      const senderTab = msg.tabId === -1 ? sender.tab?.id : msg.tabId
-      if (senderTab !== this.state.tabId) {
-        debug("Discarding message from wrong tab", msg)
-        return
-      }
+    if (!isCurrentTab) {
+      debug("Ignoring message from other tab", msg)
+      return
     }
 
     if (msg.action === "push") {
       this.state.replace(msg.data)
-
       debug("Pushed new data from message", msg)
     } else if (msg.action === "pull") {
       debug("Sending requested config")
@@ -43,6 +41,12 @@ export default abstract class SyncModule<T extends object> {
   }
 
   async push() {
+    if (!this.state.setupDone) {
+      // TODO: Throw error or inform
+      debug("Tried to push before setup done")
+      return
+    }
+
     const pushUpdateMessage: SyncMessage<T> = {
       type: "sync",
       action: "push",
