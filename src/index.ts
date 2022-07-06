@@ -1,6 +1,13 @@
-export default function exampleFunction() {
-  console.log("Hello, Plasmo!")
+import State from "./State"
+import type { SetupConfig, StateEnvironment } from "./types"
+
+export default function setupState<T extends object>(
+  environment: StateEnvironment,
+  initialState: T,
+  config?: SetupConfig<T>
+) {
+  return new State<T>(environment, initialState, config)
 }
 
-export { useExampleCounter } from "./hook"
-export { default as ReactExample } from "./ReactExample"
+export * from "./types"
+export { default as usePlasmoState } from "./hook"

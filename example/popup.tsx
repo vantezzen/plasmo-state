@@ -1,7 +1,10 @@
-import { ReactExample, useExampleCounter } from "../src"
+import { StateEnvironment, usePlasmoState } from "../src"
+import getState from "./shared"
+
+const plasmoState = getState(StateEnvironment.Popup)
 
 function IndexPopup() {
-  const [counter, incrementCounter] = useExampleCounter()
+  const state = usePlasmoState(plasmoState)
 
   return (
     <div
@@ -11,15 +14,15 @@ function IndexPopup() {
         padding: 16
       }}>
       <h1>Welcome!</h1>
-      <p>{counter}</p>
+      <p>{state.perTab}</p>
+
       <button
-        onClick={() => incrementCounter()}
+        onClick={() => state.perTab++}
         style={{
           marginTop: 16
         }}>
         Increment
       </button>
-      <ReactExample />
     </div>
   )
 }
