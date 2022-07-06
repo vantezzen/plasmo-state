@@ -1,6 +1,6 @@
 {
   "name": "@vantezzen/plasmo-state",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "♻️ Sync state across content script, background workers and the popup in Plasmo extensions",
   "type": "module",
   "main": "./dist/index.js",
