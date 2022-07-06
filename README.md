@@ -125,7 +125,7 @@ state.current.todoItems = [
 
 ### React integration
 
-This library provides a `usePlasmoState` hook that can be used to couple a state instance with a React component. This will automatically update the state when the component is updated.
+This library provides a `usePlasmoState` hook that can be used to couple a state instance with a React component. This will automatically update the component when the state is updated.
 
 Provide your current state as the first argument to the hook and the state returns the `state.current` proxy object that you can use to read and modify the state.
 
@@ -151,7 +151,17 @@ const Counter = () => {
 
 ## Info
 
+### Messages
+
 Please note that this package will send browser messages when synchronizing data. If your extension uses messages too, please make sure that your listeners ignore the sync messages and won't crash. Sync messages can be identified by having `{ type: "sync" }` as one of their properties.
+
+### Storage
+
+This library uses the storage key `plasmo-sync` to store persistent state. Please make sure your code doesn't override that key manually as this might result in corrupted data.
+
+### Plasmo
+
+This library is not associated with Plasmo Corp. in any way.
 
 ## License
 
