@@ -1,7 +1,7 @@
 {
-  "name": "plasmo-package-template",
+  "name": "@vantezzen/plasmo-state",
   "version": "1.0.0",
-  "description": "Template for writing packages interacting with Plasmo",
+  "description": "♻️ Sync state across content script, background workers and the popup in Plasmo extensions",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -7,6 +7,12 @@ These use-cases are not currently supported by Plasmo's own "storage" package as
 
 This package aims to provide a mostly unopinionated interface for storing that state while abstracting away browser-level details like state sync.
 
+## Demo
+
+A demo extension can be found in `./example`.
+
+![](./demo.gif)
+
 ## Installation
 
 Simply install the NPM package via
