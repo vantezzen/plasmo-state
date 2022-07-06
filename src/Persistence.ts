@@ -5,6 +5,11 @@ import type State from "./State"
 
 const debug = debugging("plasmo-state:Persistence")
 
+/**
+ * Provide persistence for the state.
+ * This is a wrapper object around the "@plasmohq/storage" library.
+ * This class will be used by the state class internally and doesn't need to be accessed directly.
+ */
 export default class Persistence<T extends object> {
   #storage: Storage
   #state: State<T>
@@ -20,7 +25,7 @@ export default class Persistence<T extends object> {
       [this.#STORAGE_KEY]: (syncValue) => {
         debug("Got storage value update info", syncValue.newValue)
 
-        this.#storageValue = JSON.parse(syncValue.newValue)
+        this.#handlePersistentDataUpdate(syncValue.newValue)
       }
     })
     this.fetchStateFromStorage()
@@ -37,7 +42,10 @@ export default class Persistence<T extends object> {
   async fetchStateFromStorage(): Promise<void> {
     const stateString = await this.#storage.get(this.#STORAGE_KEY)
     if (!stateString) return
+    this.#handlePersistentDataUpdate(stateString)
+  }
 
+  #handlePersistentDataUpdate(stateString: string) {
     const state = JSON.parse(stateString)
     this.#storageValue = state
 

@@ -16,6 +16,8 @@ if (incrementButton) {
     state.current.perTab++
   })
 }
+const persistentElement = document.getElementById("persistent")
+persistentElement.innerText = state.current.persistent.toString()
 
 state.addListener("change", () => {
   console.log("State changed:", state.current)
@@ -24,4 +26,5 @@ state.addListener("change", () => {
   if (counterElement) {
     counterElement.innerText = state.current.perTab.toString()
   }
+  persistentElement.innerText = state.current.persistent.toString()
 })
