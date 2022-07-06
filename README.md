@@ -149,6 +149,24 @@ const Counter = () => {
 }
 ```
 
+### Listen for changes
+
+The `State` extends the NodeJS [`EventEmitter`](https://nodejs.org/api/events.html#class-eventemitter) to allow you to listen for changes in the state.
+
+```js
+import setupState from "@vantezzen/plasmo-state"
+const state = setupState(..., {
+  counter: 0
+});
+state.on("change", (key, value) => {
+  console.log("State changed", key, value)
+})
+```
+
+If the state is changed in the current environment (i.e. not synced across content script, popup or background worker), the key will be the changed property and the value will be the new value. For all other events (synced across, loaded from storage, etc.) the key will be `"*"` and the value will be the entire state.
+
+Additionally, you may use `.once(...)` or `.removeListener(...)` to customize listener behaviour.
+
 ## Info
 
 ### Messages
