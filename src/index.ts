@@ -11,3 +11,4 @@ export default function setupState<T extends object>(
 
 export * from "./types"
 export { default as usePlasmoState } from "./hook"
+export { State }
