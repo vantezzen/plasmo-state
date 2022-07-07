@@ -167,6 +167,17 @@ If the state is changed in the current environment (i.e. not synced across conte
 
 Additionally, you may use `.once(...)` or `.removeListener(...)` to customize listener behaviour.
 
+### Destroy instance
+
+The `State` class provides a `destroy` method that can be used to destroy the state instance. This will remove all internal listeners to allow the instance to be garbage collected.
+
+```js
+import setupState from "@vantezzen/plasmo-state"
+const state = setupState(...);
+
+state.destroy()
+```
+
 ## Info
 
 ### Messages

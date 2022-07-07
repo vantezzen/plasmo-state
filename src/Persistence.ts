@@ -20,7 +20,8 @@ export default class Persistence<T extends object> {
     this.#storage = new Storage()
     this.#state = state
 
-    this.#state.addListener("change", this.#onStateChange.bind(this))
+    this.onStateChange = this.onStateChange.bind(this)
+    this.#state.addListener("change", this.onStateChange)
     this.#storage.watch({
       [this.#STORAGE_KEY]: (syncValue) => {
         debug("Got storage value update info", syncValue.newValue)
@@ -31,7 +32,7 @@ export default class Persistence<T extends object> {
     this.fetchStateFromStorage()
   }
 
-  #onStateChange(key: keyof T, value: any) {
+  private onStateChange(key: keyof T, value: any) {
     if (key === "*" || !this.#state.keyIsPersistent(key)) return
 
     this.#storageValue[key] = value
@@ -53,5 +54,11 @@ export default class Persistence<T extends object> {
       this.#state.current[key] = value
     }
     debug("Fetched state from persistent storage")
+  }
+
+  destroy() {
+    this.#state.removeListener("change", this.onStateChange)
+    this.#state = null
+    // TODO: Remove storage listeners
   }
 }

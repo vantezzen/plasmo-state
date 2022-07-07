@@ -15,8 +15,10 @@ export default class State<T extends object> extends EventEmitter {
   #environment: StateEnvironment
   #config: SetupConfig<T>
   setupDone = false
+  #isDestroyed = false
 
   #syncModule: SyncModule<T>
+  #persistence: Persistence<T>
 
   constructor(
     environment: StateEnvironment,
@@ -29,8 +31,7 @@ export default class State<T extends object> extends EventEmitter {
 
     this.#state = initialState
     this.#config = config || {}
-
-    new Persistence(this)
+    this.#persistence = new Persistence(this)
 
     this.#setup()
   }
@@ -63,9 +64,12 @@ export default class State<T extends object> extends EventEmitter {
   get current() {
     return new Proxy(this.#state, {
       get: (target, key) => {
+        this.ensureNotDestroyed()
         return target[key]
       },
       set: (target, key, value) => {
+        this.ensureNotDestroyed()
+
         target[key] = value
 
         this.#syncModule?.push()
@@ -81,6 +85,7 @@ export default class State<T extends object> extends EventEmitter {
    * Please note that this is NOT a proxy object. Do not modify it as changes will not be synced and may be overridden at any time
    */
   get currentRaw() {
+    this.ensureNotDestroyed()
     return this.#state as Readonly<T>
   }
 
@@ -110,7 +115,36 @@ export default class State<T extends object> extends EventEmitter {
    * @param state New state object
    */
   replace(state: T) {
+    this.ensureNotDestroyed()
     this.#state = state
     this.emit("change", "*", state)
+  }
+
+  /**
+   * Destroy the instance and clean up.
+   * This will remove all listeners and stops syncing to enable the instance to be garbage collected.
+   *
+   * After detroying the instance, it is not possible to use it anymore!
+   */
+  destroy() {
+    this.#syncModule.destroy()
+    this.#persistence.destroy()
+    this.#isDestroyed = true
+  }
+
+  /**
+   * Check if the instance is destroyed
+   */
+  get isDestroyed() {
+    return this.#isDestroyed
+  }
+
+  /**
+   * Ensure that the state is not already destroyed, otherwise throw
+   */
+  ensureNotDestroyed() {
+    if (this.#isDestroyed) {
+      throw new Error("State is destroyed")
+    }
   }
 }

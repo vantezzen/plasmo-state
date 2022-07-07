@@ -1,8 +1,8 @@
 import debugging from "debug"
 import browser, { Runtime } from "webextension-polyfill"
 
-import type State from "~State"
-import type { SyncMessage } from "~types"
+import type State from "../State"
+import type { SyncMessage } from "../types"
 
 const debug = debugging("plasmo-state:Sync:SyncModule")
 
@@ -89,5 +89,9 @@ export default abstract class SyncModule<T extends object> {
   }
   async onAfterPull(state?: T) {
     return state
+  }
+
+  destroy() {
+    browser.runtime.onMessage.removeListener(this.configUpdateListener)
   }
 }
