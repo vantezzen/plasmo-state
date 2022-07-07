@@ -97,6 +97,13 @@ export default class State<T extends object> extends EventEmitter {
   }
 
   /**
+   * Get the current environment this instance is set to work in
+   */
+  get environment(): StateEnvironment {
+    return this.#environment
+  }
+
+  /**
    * Checks if a key should be persisted in the browser storage
    *
    * @param key Key to check
