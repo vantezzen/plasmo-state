@@ -1,3 +1,4 @@
+import debugging from "debug"
 import EventEmitter from "events"
 
 import Persistence from "./Persistence"
@@ -6,6 +7,8 @@ import ExtensionSyncModule from "./Sync/ExtensionSyncModule"
 import type SyncModule from "./Sync/SyncModule"
 import { getCurrentTabId } from "./getTabId"
 import { SetupConfig, StateEnvironment } from "./types"
+
+const debug = debugging("plasmo-state:State")
 
 /**
  * Central state management class.
@@ -37,13 +40,17 @@ export default class State<T extends object> extends EventEmitter {
   }
 
   async #setup() {
-    if (!("tabId" in this.#config)) {
+    debug("Setting up...")
+    if (!this.#config.tabId) {
       this.#config.tabId = await getCurrentTabId()
+      debug("Dynamically got tab ID", this.#config.tabId)
     }
 
     this.#syncModule = this.#createSyncModule()
+    debug("Sync module created, pulling initial data")
     await this.#syncModule.pull()
     this.setupDone = true
+    debug("Setup done")
   }
 
   #createSyncModule(): SyncModule<T> {

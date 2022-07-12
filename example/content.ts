@@ -27,4 +27,9 @@ state.addListener("change", () => {
     counterElement.innerText = state.current.perTab.toString()
   }
   persistentElement.innerText = state.current.persistent.toString()
+
+  const backgroundElement = document.getElementById("background")
+  if (backgroundElement) {
+    backgroundElement.innerText = state.current.background.toString()
+  }
 })

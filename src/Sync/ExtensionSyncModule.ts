@@ -15,11 +15,9 @@ export default class ExtensionSyncModule<
 > extends SyncModule<T> {
   async onPush(pushUpdateMessage: SyncMessage<T>) {
     // Also push changes to the content script
-    try {
-      await browser.tabs.sendMessage(this.state.tabId, pushUpdateMessage)
-    } catch (e) {
-      debug("Error pushing config to content script", e)
-    }
+    await browser.tabs
+      .sendMessage(this.state.tabId, pushUpdateMessage)
+      .catch(() => {})
   }
 
   async onAfterPull(state?: T) {
@@ -27,11 +25,13 @@ export default class ExtensionSyncModule<
       debug(
         "No state received from extension environment - trying content script"
       )
-      return await browser.tabs.sendMessage(this.state.tabId, {
-        type: "sync",
-        action: "pull",
-        tabId: this.state.tabId
-      })
+      return await browser.tabs
+        .sendMessage(this.state.tabId, {
+          type: "sync",
+          action: "pull",
+          tabId: this.state.tabId
+        })
+        .catch(() => undefined)
     }
     return state
   }

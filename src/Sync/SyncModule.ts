@@ -56,22 +56,20 @@ export default abstract class SyncModule<T extends object> {
 
     this.onPush(pushUpdateMessage)
 
-    try {
-      browser.runtime.sendMessage(pushUpdateMessage)
-    } catch (e) {
-      debug("Error pushing config to content script", e)
-    }
+    browser.runtime.sendMessage(pushUpdateMessage).catch(() => {})
 
     debug("Pushed updates")
   }
   async onPush(pushUpdateMessage: SyncMessage<T>) {}
 
   async pull() {
-    let state = await browser.runtime.sendMessage({
-      type: "sync",
-      action: "pull",
-      tabId: this.state.tabId
-    })
+    let state = await browser.runtime
+      .sendMessage({
+        type: "sync",
+        action: "pull",
+        tabId: this.state.tabId
+      })
+      .catch(() => undefined)
     state = await this.onAfterPull(state)
 
     if (!state) {
