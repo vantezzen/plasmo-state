@@ -42,7 +42,7 @@ export default class State<T extends object> extends EventEmitter {
   async #setup() {
     debug("Setting up...")
     if (!this.#config.tabId) {
-      this.#config.tabId = await getCurrentTabId()
+      this.#config.tabId = await getCurrentTabId(this.#environment)
       debug("Dynamically got tab ID", this.#config.tabId)
     }
 
