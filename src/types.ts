@@ -24,3 +24,5 @@ export type SyncMessage<T> = {
   data: T
   tabId: number
 }
+
+export type ChangeSource = "user" | "storage" | "sync"

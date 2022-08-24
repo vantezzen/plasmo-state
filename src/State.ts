@@ -6,7 +6,7 @@ import ContentSyncModule from "./Sync/ContentSyncModule"
 import ExtensionSyncModule from "./Sync/ExtensionSyncModule"
 import type SyncModule from "./Sync/SyncModule"
 import { getCurrentTabId } from "./getTabId"
-import { SetupConfig, StateEnvironment } from "./types"
+import { ChangeSource, SetupConfig, StateEnvironment } from "./types"
 
 const debug = debugging("plasmo-state:State")
 
@@ -22,6 +22,8 @@ export default class State<T extends object> extends EventEmitter {
 
   #syncModule: SyncModule<T>
   #persistence: Persistence<T>
+
+  currentSource: ChangeSource = "user"
 
   constructor(
     environment: StateEnvironment,
@@ -81,7 +83,7 @@ export default class State<T extends object> extends EventEmitter {
 
         this.#syncModule?.push()
 
-        this.emit("change", key, value)
+        this.emit("change", key, this.currentSource)
         return true
       }
     })
@@ -128,10 +130,10 @@ export default class State<T extends object> extends EventEmitter {
    *
    * @param state New state object
    */
-  replace(state: T) {
+  replace(state: T, source: ChangeSource) {
     this.ensureNotDestroyed()
     this.#state = state
-    this.emit("change", "*", state)
+    this.emit("change", "*", source)
   }
 
   /**

@@ -1,6 +1,6 @@
 {
   "name": "@vantezzen/plasmo-state",
-  "version": "1.0.7",
+  "version": "2.0.1",
   "description": "♻️ Sync state across content script, background workers and the popup in Plasmo extensions",
   "type": "module",
   "main": "./dist/index.js",
@@ -61,7 +61,7 @@
     "typescript": "4.7.4"
   },
   "dependencies": {
-    "@plasmohq/storage": "^0.6.4",
+    "@plasmohq/storage": "^0.8.1",
     "@types/webextension-polyfill": "^0.9.0",
     "debug": "^4.3.4",
     "webextension-polyfill": "^0.9.0"

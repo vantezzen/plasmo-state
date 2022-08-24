@@ -3,7 +3,9 @@
   "displayName": "Example",
   "version": "1.0.0",
   "description": "Example extension.",
-  "dependencies": {},
+  "dependencies": {
+    "react": "18.2.0"
+  },
   "manifest": {
     "permissions": [
       "storage"

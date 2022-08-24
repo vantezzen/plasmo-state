@@ -31,7 +31,7 @@ export default abstract class SyncModule<T extends object> {
     }
 
     if (msg.action === "push") {
-      this.state.replace(msg.data)
+      this.state.replace(msg.data, "sync")
       debug("Pushed new data from message", msg)
     } else if (msg.action === "pull") {
       debug("Sending requested config")
@@ -83,7 +83,7 @@ export default abstract class SyncModule<T extends object> {
     }
 
     debug("Fetched, and change")
-    this.state.replace(state)
+    this.state.replace(state, "sync")
   }
   async onAfterPull(state?: T) {
     return state
