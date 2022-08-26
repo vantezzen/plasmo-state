@@ -41,8 +41,16 @@ export default class Persistence<T extends object> {
   private onStateChange(key: keyof T, source: ChangeSource) {
     if (source !== "user" || !this.#state.keyIsPersistent(key)) return
 
+    // Filter out keys that are not persistent
+    const currentState = this.#state.currentRaw
+    const persistentState = Object.fromEntries(
+      Object.entries(currentState).filter(([key]) =>
+        this.#state.keyIsPersistent(key as keyof T)
+      )
+    )
+
     browser.storage.sync.set({
-      [this.#STORAGE_KEY]: JSON.stringify(this.#state.currentRaw)
+      [this.#STORAGE_KEY]: JSON.stringify(persistentState)
     })
     this.#debug("Pushed changed to persistent storage")
   }
