@@ -4,8 +4,6 @@ import browser from "webextension-polyfill"
 import type State from "./State"
 import type { ChangeSource } from "./types"
 
-const debug = debugging("plasmo-state:Persistence")
-
 /**
  * Provide persistence for the state.
  * This is a wrapper object around the "@plasmohq/storage" library.
@@ -13,11 +11,14 @@ const debug = debugging("plasmo-state:Persistence")
  */
 export default class Persistence<T extends object> {
   #state: State<T>
-  #storageValue: Partial<T> = {}
   #STORAGE_KEY = "plasmo-sync"
+  #debug: any
 
   constructor(state: State<T>) {
     this.#state = state
+    this.#debug = debugging(
+      `plasmo-state:Persistence:${this.#state.environment}`
+    )
 
     this.onStateChange = this.onStateChange.bind(this)
     this.#state.addListener("change", this.onStateChange)
@@ -30,7 +31,7 @@ export default class Persistence<T extends object> {
 
   private onBrowserStorageUpdate(update: { [key: string]: any }) {
     if (update[this.#STORAGE_KEY]) {
-      debug("Got storage value update info", update[this.#STORAGE_KEY])
+      this.#debug("Got storage value update info", update[this.#STORAGE_KEY])
       this.#handlePersistentDataUpdate(
         (update[this.#STORAGE_KEY] as any).newValue
       )
@@ -40,16 +41,15 @@ export default class Persistence<T extends object> {
   private onStateChange(key: keyof T, source: ChangeSource) {
     if (source !== "user" || !this.#state.keyIsPersistent(key)) return
 
-    this.#storageValue[key] = this.#state.current[key]
     browser.storage.sync.set({
-      [this.#STORAGE_KEY]: JSON.stringify(this.#storageValue)
+      [this.#STORAGE_KEY]: JSON.stringify(this.#state.currentRaw)
     })
-    debug("Pushed changed to persistent storage")
+    this.#debug("Pushed changed to persistent storage")
   }
 
   async fetchStateFromStorage(): Promise<void> {
     const state = await browser.storage.sync.get(this.#STORAGE_KEY)
-    debug("fetchStateFromStorage", state)
+    this.#debug("fetchStateFromStorage", state)
 
     if (!state[this.#STORAGE_KEY]) return
     this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
@@ -57,14 +57,13 @@ export default class Persistence<T extends object> {
 
   #handlePersistentDataUpdate(stateString: string) {
     const state = JSON.parse(stateString)
-    this.#storageValue = state
 
     this.#state.currentSource = "storage"
     for (const [key, value] of Object.entries(state)) {
       this.#state.current[key] = value
     }
     this.#state.currentSource = "user"
-    debug("Fetched state from persistent storage")
+    this.#debug("Fetched state from persistent storage")
   }
 
   destroy() {

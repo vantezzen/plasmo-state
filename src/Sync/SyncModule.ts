@@ -4,18 +4,18 @@ import browser, { Runtime } from "webextension-polyfill"
 import type State from "../State"
 import type { SyncMessage } from "../types"
 
-const debug = debugging("plasmo-state:Sync:SyncModule")
-
 export default abstract class SyncModule<T extends object> {
   protected state: State<T>
+  #debug: any
 
   constructor(state: State<T>) {
     this.state = state
+    this.#debug = debugging(`plasmo-state:State:${this.state.environment}`)
 
     this.configUpdateListener = this.configUpdateListener.bind(this)
     browser.runtime.onMessage.addListener(this.configUpdateListener)
 
-    debug("Setup done")
+    this.#debug("Setup done")
   }
 
   configUpdateListener(msg: SyncMessage<T>, sender: Runtime.MessageSender) {
@@ -26,15 +26,15 @@ export default abstract class SyncModule<T extends object> {
       this.state.tabId === senderTab || this.state.tabId === -1
 
     if (!isCurrentTab) {
-      debug("Ignoring message from other tab", msg)
+      this.#debug("Ignoring message from other tab", msg)
       return
     }
 
     if (msg.action === "push") {
       this.state.replace(msg.data, "sync")
-      debug("Pushed new data from message", msg)
+      this.#debug("Pushed new data from message", msg)
     } else if (msg.action === "pull") {
-      debug("Sending requested config")
+      this.#debug("Sending requested config")
 
       return Promise.resolve(this.state.currentRaw)
     }
@@ -43,7 +43,7 @@ export default abstract class SyncModule<T extends object> {
   async push() {
     if (!this.state.setupDone) {
       // TODO: Throw error or inform
-      debug("Tried to push before setup done")
+      this.#debug("Tried to push before setup done")
       return
     }
 
@@ -58,7 +58,7 @@ export default abstract class SyncModule<T extends object> {
 
     browser.runtime.sendMessage(pushUpdateMessage).catch(() => {})
 
-    debug("Pushed updates")
+    this.#debug("Pushed updates")
   }
   async onPush(pushUpdateMessage: SyncMessage<T>) {}
 
@@ -73,16 +73,16 @@ export default abstract class SyncModule<T extends object> {
     state = await this.onAfterPull(state)
 
     if (!state) {
-      debug("Fetched, but no result")
+      this.#debug("Fetched, but no result")
       return
     }
 
     if (JSON.stringify(this.state.currentRaw) === JSON.stringify(state)) {
-      debug("Fetched, but no change")
+      this.#debug("Fetched, but no change")
       return
     }
 
-    debug("Fetched, and change")
+    this.#debug("Fetched, and change")
     this.state.replace(state, "sync")
   }
   async onAfterPull(state?: T) {

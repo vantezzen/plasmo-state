@@ -8,8 +8,6 @@ import type SyncModule from "./Sync/SyncModule"
 import { getCurrentTabId } from "./getTabId"
 import { ChangeSource, SetupConfig, StateEnvironment } from "./types"
 
-const debug = debugging("plasmo-state:State")
-
 /**
  * Central state management class.
  */
@@ -22,6 +20,7 @@ export default class State<T extends object> extends EventEmitter {
 
   #syncModule: SyncModule<T>
   #persistence: Persistence<T>
+  #debug: any
 
   currentSource: ChangeSource = "user"
 
@@ -33,6 +32,7 @@ export default class State<T extends object> extends EventEmitter {
     super()
 
     this.#environment = environment
+    this.#debug = debugging(`plasmo-state:State:${environment}`)
 
     this.#state = initialState
     this.#config = config || {}
@@ -42,17 +42,17 @@ export default class State<T extends object> extends EventEmitter {
   }
 
   async #setup() {
-    debug("Setting up...")
+    this.#debug("Setting up...")
     if (!this.#config.tabId) {
       this.#config.tabId = await getCurrentTabId(this.#environment)
-      debug("Dynamically got tab ID", this.#config.tabId)
+      this.#debug("Dynamically got tab ID", this.#config.tabId)
     }
 
     this.#syncModule = this.#createSyncModule()
-    debug("Sync module created, pulling initial data")
+    this.#debug("Sync module created, pulling initial data")
     await this.#syncModule.pull()
     this.setupDone = true
-    debug("Setup done")
+    this.#debug("Setup done")
   }
 
   #createSyncModule(): SyncModule<T> {
@@ -77,11 +77,18 @@ export default class State<T extends object> extends EventEmitter {
         return target[key]
       },
       set: (target, key, value) => {
+        if (value === target[key]) return true
+
         this.ensureNotDestroyed()
 
         target[key] = value
 
-        this.#syncModule?.push()
+        if (
+          this.currentSource === "user" &&
+          !this.keyIsPersistent(key as keyof T)
+        ) {
+          this.#syncModule?.push()
+        }
 
         this.emit("change", key, this.currentSource)
         return true
