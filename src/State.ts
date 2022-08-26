@@ -15,6 +15,7 @@ export default class State<T extends object> extends EventEmitter {
   #state: T
   #environment: StateEnvironment
   #config: SetupConfig<T>
+  #readyProgress: number = 0
   setupDone = false
   #isDestroyed = false
 
@@ -53,6 +54,20 @@ export default class State<T extends object> extends EventEmitter {
     await this.#syncModule.pull()
     this.setupDone = true
     this.#debug("Setup done")
+    this.increaseReadyProgress()
+  }
+
+  /**
+   * Internal method to increase the ready progress
+   * This is used to determine if the state is ready to be used
+   *
+   * Do not call this manually!
+   */
+  increaseReadyProgress() {
+    this.#readyProgress++
+    if (this.#readyProgress === 2) {
+      this.emit("ready")
+    }
   }
 
   #createSyncModule(): SyncModule<T> {

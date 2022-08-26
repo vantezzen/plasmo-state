@@ -61,6 +61,7 @@ export default class Persistence<T extends object> {
 
     if (!state[this.#STORAGE_KEY]) return
     this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
+    this.#state.increaseReadyProgress()
   }
 
   #handlePersistentDataUpdate(stateString: string) {

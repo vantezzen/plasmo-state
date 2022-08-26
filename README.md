@@ -170,6 +170,22 @@ The source can be `"user"` if the change was triggered by your script, `"sync"` 
 
 Additionally, you may use `.once(...)` or `.removeListener(...)` to customize listener behaviour.
 
+### Listen for ready event
+
+The `State` class also provides a `ready` event that is emitted when the state is ready to be used.
+
+Before the `ready` event is emitted, the state might be your default provided state or a partial loaded state from storage or other environments. Due to this, code that can handle changes in the state (e.g. React input components) can be executed before the state is ready, static code that requires the state to be final (e.g. scripts that execute based on the saved behaviour) should instead be executed after the state is ready.
+
+```js
+import setupState, { ChangeSource } from "@vantezzen/plasmo-state"
+const state = setupState(..., {
+  counter: 0
+});
+state.on("ready", () => {
+  console.log("State is ready")
+})
+```
+
 ### Destroy instance
 
 The `State` class provides a `destroy` method that can be used to destroy the state instance. This will remove all internal listeners to allow the instance to be garbage collected.
