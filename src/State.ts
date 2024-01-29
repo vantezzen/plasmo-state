@@ -35,6 +35,8 @@ export default class State<T extends object> extends EventEmitter {
     this.#environment = environment
     this.#debug = debugging(`plasmo-state:State:${environment}`)
 
+    this.#debug("State created")
+
     this.#state = initialState
     this.#config = config || {}
     this.#persistence = new Persistence(this)
@@ -73,7 +75,8 @@ export default class State<T extends object> extends EventEmitter {
   #createSyncModule(): SyncModule<T> {
     if (
       this.#environment === StateEnvironment.Background ||
-      this.#environment === StateEnvironment.Popup
+      this.#environment === StateEnvironment.Popup ||
+      this.#environment === StateEnvironment.Offscreen
     ) {
       return new ExtensionSyncModule(this)
     }

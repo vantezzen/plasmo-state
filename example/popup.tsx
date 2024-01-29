@@ -11,7 +11,9 @@ function IndexPopup() {
       style={{
         display: "flex",
         flexDirection: "column",
-        padding: 16
+        padding: 16,
+        width: 300,
+        height: 300
       }}>
       <h1>Welcome!</h1>
 

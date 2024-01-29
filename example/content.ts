@@ -1,9 +1,9 @@
-import type { PlasmoContentScript } from "plasmo"
+import type { PlasmoCSConfig } from "plasmo"
 
 import { StateEnvironment } from "../src"
 import getState from "./shared"
 
-export const config: PlasmoContentScript = {
+export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"],
   all_frames: true
 }

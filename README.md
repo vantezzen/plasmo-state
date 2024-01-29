@@ -76,7 +76,7 @@ const plasmoState = setupState<State>(environment, initialState, {
 `setupState` requires two arguments:
 
 - `environment`: The environment that the state is being used in. The state needs to be aware of if it is running in a popup, background or content script.
-  Use the `StateEnvironment` enum to specify this or use the string "popup", "background" or "content" instead if you cannot use the enum.
+  Use the `StateEnvironment` enum to specify this or use the string "popup", "background", "offscreen" or "content" instead if you cannot use the enum.
 - `initialState`: The initial state that will be used if no state has been provided by other environments yet.
 
 You can also set the generic type of the state (as seen using `setupState<State>` above), otherwise the type checker will use the type of the initialState argument.
@@ -86,7 +86,7 @@ Optionally a third argument "config" can be provided to specify these properties
 - `persistent`: An array of property names that should be persisted in the browser storage.
   If you don't specify this, no properties will be persisted. By enabling persistence, the value will also be shared across tabs.
 - `tabId`: The tab ID that the state should be shared with. If not specified, the tab ID of the current active tab will be used.
-  This is only used if the environment is `StateEnvironment.Background` or `StateEnvironment.Popup` as `StateEnvironment.Content` will already be contained in a specific tab.
+  This is only used if the environment is `StateEnvironment.Background`, `StateEnvironment.Offscreen` or `StateEnvironment.Popup` as `StateEnvironment.Content` will already be contained in a specific tab.
   It is highly recommended to specify this in the background script as working with multiple windows may result in unexpected behaviour.
 
 ### Get and modify state

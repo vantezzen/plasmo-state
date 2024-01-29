@@ -1,6 +1,6 @@
 {
   "name": "@vantezzen/plasmo-state",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "♻️ Sync state across content script, background workers and the popup in Plasmo extensions",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,7 +18,7 @@
     "dev": "run-p dev:*",
     "dev:compile": "tsup src/index.ts --format esm --watch --sourcemap",
     "dev:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "dev:example": "cd example && plasmo dev --target=chrome-mv2",
+    "dev:example": "cd example && plasmo dev --target=chrome-mv3",
     "build": "tsup src/index.ts --format esm --minify --clean --dts",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "prepublishOnly": "pnpm build"
@@ -51,7 +51,7 @@
     "events": "^3.3.0",
     "jest": "28.1.2",
     "jest-environment-jsdom": "28.1.2",
-    "plasmo": "canary",
+    "plasmo": "^0.84.1",
     "prettier": "2.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

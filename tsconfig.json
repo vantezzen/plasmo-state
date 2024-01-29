@@ -5,6 +5,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "incremental": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false
   }
 }

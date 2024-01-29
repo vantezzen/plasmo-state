@@ -19,6 +19,7 @@ export default abstract class SyncModule<T extends object> {
   }
 
   configUpdateListener(msg: SyncMessage<T>, sender: Runtime.MessageSender) {
+    this.#debug("Got message", msg)
     if (typeof msg !== "object" || msg.type !== "sync") return
 
     const senderTab = msg.tabId === -1 ? sender.tab?.id : msg.tabId
@@ -34,7 +35,7 @@ export default abstract class SyncModule<T extends object> {
       this.state.replace(msg.data, "sync")
       this.#debug("Pushed new data from message", msg)
     } else if (msg.action === "pull") {
-      this.#debug("Sending requested config")
+      this.#debug("Sending requested data", msg)
 
       return Promise.resolve(this.state.currentRaw)
     }
@@ -60,16 +61,37 @@ export default abstract class SyncModule<T extends object> {
 
     this.#debug("Pushed updates")
   }
+
+  /**
+   * Extension point for subclasses
+   */
   async onPush(pushUpdateMessage: SyncMessage<T>) {}
 
   async pull() {
-    let state = await browser.runtime
-      .sendMessage({
-        type: "sync",
-        action: "pull",
-        tabId: this.state.tabId
-      })
-      .catch(() => undefined)
+    this.#debug("Pulling...")
+
+    let state = await Promise.race(
+      [
+        browser.tabs
+          ? browser.tabs
+              ?.sendMessage(this.state.tabId, {
+                type: "sync",
+                action: "pull",
+                tabId: this.state.tabId
+              })
+              .catch(() => undefined)
+          : undefined,
+        browser.runtime
+          .sendMessage({
+            type: "sync",
+            action: "pull",
+            tabId: this.state.tabId
+          })
+          .catch(() => undefined)
+      ].filter(Boolean)
+    )
+
+    this.#debug("Fetched", state)
     state = await this.onAfterPull(state)
 
     if (!state) {
@@ -85,6 +107,10 @@ export default abstract class SyncModule<T extends object> {
     this.#debug("Fetched, and change")
     this.state.replace(state, "sync")
   }
+
+  /**
+   * Extension point for subclasses to modify the state after a pull
+   */
   async onAfterPull(state?: T) {
     return state
   }

@@ -4,7 +4,8 @@
 export enum StateEnvironment {
   Popup = "popup",
   Background = "background",
-  Content = "content"
+  Content = "content",
+  Offscreen = "offscreen"
 }
 
 /**
