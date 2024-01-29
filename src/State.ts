@@ -188,4 +188,11 @@ export default class State<T extends object> extends EventEmitter {
       throw new Error("State is destroyed")
     }
   }
+
+  /**
+   * Force the state to be pulled from other environments
+   */
+  forcePull() {
+    return this.#syncModule.pull()
+  }
 }

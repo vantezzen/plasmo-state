@@ -199,6 +199,10 @@ state.destroy()
 
 ## Info
 
+### Content scripts
+
+You can only use the "createState" function in content scripts that are not using "world: MAIN" as the script otherwise won't have access to the browser APIs required for this library.
+
 ### Messages
 
 Please note that this package will send browser messages when synchronizing data. If your extension uses messages too, please make sure that your listeners ignore the sync messages and won't crash. Sync messages can be identified by having `{ type: "sync" }` as one of their properties.
