@@ -59,8 +59,9 @@ export default class Persistence<T extends object> {
     const state = await browser.storage.sync.get(this.#STORAGE_KEY)
     this.#debug("fetchStateFromStorage", state)
 
-    if (!state[this.#STORAGE_KEY]) return
-    this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
+    if (state[this.#STORAGE_KEY]) {
+      this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
+    }
     this.#state.increaseReadyProgress()
   }
 
