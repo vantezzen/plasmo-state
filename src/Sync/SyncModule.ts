@@ -2,7 +2,7 @@ import debugging from "debug"
 import browser, { Runtime } from "webextension-polyfill"
 
 import type State from "../State"
-import type { SyncMessage } from "../types"
+import { StateEnvironment, SyncMessage } from "../types"
 
 export default abstract class SyncModule<T extends object> {
   protected state: State<T>
@@ -22,9 +22,8 @@ export default abstract class SyncModule<T extends object> {
     this.#debug("Got message", msg)
     if (typeof msg !== "object" || msg.type !== "sync") return
 
-    const senderTab = msg.tabId === -1 ? sender.tab?.id : msg.tabId
-    const isCurrentTab =
-      this.state.tabId === senderTab || this.state.tabId === -1
+    const senderTab = (msg.tabId === -1 ? sender.tab?.id : msg.tabId) ?? -1
+    const isCurrentTab = this.state.tabId === senderTab || senderTab === -1
 
     if (!isCurrentTab) {
       this.#debug("Ignoring message from other tab", msg)
@@ -53,6 +52,22 @@ export default abstract class SyncModule<T extends object> {
       action: "push",
       data: this.state.currentRaw,
       tabId: this.state.tabId
+    }
+
+    if (
+      this.state.tabId === -1 &&
+      this.state.environment !== StateEnvironment.Content
+    ) {
+      console.warn(`[plasmo-state] You are using plasmo-state inside a non-content script context (e.g. popup or background) without providing a tab ID.
+Due to this, your state changes will be pushed to *all* tabs, which may not be the intended behavior.
+
+If you want to push state changes only to the current tab, please provide a valid tab ID in the state setup configuration, e.g.:
+const plasmoState = setupState(environment, initialState, {
+  tabId: await browser.tabs?.query({ active: true, currentWindow: true }).then(tabs => tabs[0]?.id)
+})
+
+To find out more, visit https://github.com/vantezzen/plasmo-state#setupstate
+`)
     }
 
     this.onPush(pushUpdateMessage)

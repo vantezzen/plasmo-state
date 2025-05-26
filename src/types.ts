@@ -21,11 +21,22 @@ export type SetupConfig<T> = {
  */
 export type SyncMessage<T> = {
   type: "sync"
-  action: "push" | "pull" | "tabId" | "pushStateOffscreen" | "pullStateOffscreen" // Added offscreen actions
-  data?: T // Made data optional as pullStateOffscreen might not have it
-  payload?: T // Added for offscreen messages, consistent with handleRuntimeMessage
+  action:
+    | "push"
+    | "pull"
+    | "tabId"
+    | "pushStateOffscreen"
+    | "pullStateOffscreen"
+  data?: T
+  payload?: T
   tabId: number
 }
 
 // Added "content", "background", and "offscreen" to ChangeSource
-export type ChangeSource = "user" | "content" | "background" | "storage" | "sync" | "offscreen";
+export type ChangeSource =
+  | "user"
+  | "content"
+  | "background"
+  | "storage"
+  | "sync"
+  | "offscreen"

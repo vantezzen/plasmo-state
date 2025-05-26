@@ -150,6 +150,12 @@ const Counter = () => {
 }
 ```
 
+### Usage in Offscreen pages
+
+plasmo-state can be used within offscreen pages. However, since offscreen pages cannot connect with the browser storage or other tabs directly, plasmo-state will use the background worker to sync the state across environments.
+
+Due to this, you *need to ensure* that a background worker is running when using plasmo-state in offscreen pages. You can simply initialize the state with `setupState` in the background worker and plasmo-state will take care of the rest.
+
 ### Listen for changes
 
 The `State` extends the NodeJS [`EventEmitter`](https://nodejs.org/api/events.html#class-eventemitter) to allow you to listen for changes in the state.

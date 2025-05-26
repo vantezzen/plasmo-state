@@ -3,7 +3,9 @@ import browser from "webextension-polyfill"
 
 import type State from "./State"
 import type { ChangeSource } from "./types"
-import { StateEnvironment } from "./types" // Added import
+import { StateEnvironment } from "./types"
+
+// Added import
 
 /**
  * Provide persistence for the state.
@@ -34,7 +36,6 @@ export default class Persistence<T extends object> {
   }
 
   private onBrowserStorageUpdate(update: { [key: string]: any }) {
-    // This check is fine as is, listener won't be added for Offscreen
     if (update[this.#STORAGE_KEY]) {
       this.#debug("Got storage value update info", update[this.#STORAGE_KEY])
       this.#handlePersistentDataUpdate(
@@ -44,9 +45,10 @@ export default class Persistence<T extends object> {
   }
 
   private onStateChange(key: keyof T, source: ChangeSource) {
-    // Skip if Offscreen
     if (this.#state.environment === StateEnvironment.Offscreen) {
-      this.#debug("Offscreen environment: Skipping storage update onStateChange")
+      this.#debug(
+        "Offscreen environment: Skipping storage update onStateChange"
+      )
       return
     }
 
@@ -81,9 +83,7 @@ export default class Persistence<T extends object> {
       }
     } catch (error) {
       this.#debug("Error in fetchStateFromStorage:", error)
-      // Handle or log error as appropriate
     } finally {
-      // Ensure increaseReadyProgress is always called
       this.#state.increaseReadyProgress()
     }
   }
@@ -101,14 +101,10 @@ export default class Persistence<T extends object> {
 
   destroy() {
     this.#state.removeListener("change", this.onStateChange)
-    // Conditionally remove listener if not in Offscreen environment
     if (this.#state.environment !== StateEnvironment.Offscreen) {
       browser.storage.sync.onChanged.removeListener(this.onBrowserStorageUpdate)
     }
-    // Setting #state to null should be done carefully, ensure it's intended.
-    // If #state can be null, other methods might need null checks for this.#state.environment
-    // For now, assuming #state is valid until destroy is fully completed.
-    // this.#state = null // Commenting this out for now as it might cause issues if other async operations are pending
+    this.#state = null
     this.#debug("Persistence module destroyed")
   }
 }

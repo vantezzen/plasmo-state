@@ -1,11 +1,12 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen/offscreen.html"
 
-import getState, { StateEnvironment } from "./shared" // Consolidated import
+import { StateEnvironment } from "../src"
+import getState from "./shared"
 
-const plasmoState = getState(StateEnvironment.Popup) // Assuming background might manage popup state or its own
-setInterval(() => {
-  plasmoState.current.background++
-}, 1000)
+const plasmoState = getState(StateEnvironment.Background)
+// setInterval(() => {
+//   plasmoState.current.background++
+// }, 1000)
 
 // Setup Offscreen Page
 // Source: https://github.com/PlasmoHQ/plasmo/issues/527#issuecomment-1546617808
