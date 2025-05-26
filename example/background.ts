@@ -4,9 +4,9 @@ import { StateEnvironment } from "../src"
 import getState from "./shared"
 
 const plasmoState = getState(StateEnvironment.Background)
-// setInterval(() => {
-//   plasmoState.current.background++
-// }, 1000)
+setInterval(() => {
+  plasmoState.current.background++
+}, 1000)
 
 // Setup Offscreen Page
 // Source: https://github.com/PlasmoHQ/plasmo/issues/527#issuecomment-1546617808
@@ -39,10 +39,6 @@ async function createOffscreenDocument() {
     })
 }
 createOffscreenDocument()
-
-// Note: The hasDocument function using clients.matchAll() might not be reliable
-// for checking offscreen document existence from a service worker.
-// chrome.runtime.getContexts is more reliable.
 
 // Needed for Typescript validation
 export {}

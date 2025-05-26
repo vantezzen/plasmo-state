@@ -5,8 +5,6 @@ import type State from "./State"
 import type { ChangeSource } from "./types"
 import { StateEnvironment } from "./types"
 
-// Added import
-
 /**
  * Provide persistence for the state.
  * This is a wrapper object around the "@plasmohq/storage" library.
@@ -27,7 +25,6 @@ export default class Persistence<T extends object> {
     this.#state.addListener("change", this.onStateChange)
 
     this.onBrowserStorageUpdate = this.onBrowserStorageUpdate.bind(this)
-    // Conditionally add listener if not in Offscreen environment
     if (this.#state.environment !== StateEnvironment.Offscreen) {
       browser.storage.sync.onChanged.addListener(this.onBrowserStorageUpdate)
     }

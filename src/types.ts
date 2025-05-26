@@ -32,7 +32,6 @@ export type SyncMessage<T> = {
   tabId: number
 }
 
-// Added "content", "background", and "offscreen" to ChangeSource
 export type ChangeSource =
   | "user"
   | "content"
