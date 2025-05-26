@@ -3,6 +3,7 @@ import browser from "webextension-polyfill"
 
 import type State from "./State"
 import type { ChangeSource } from "./types"
+import { StateEnvironment } from "./types"
 
 /**
  * Provide persistence for the state.
@@ -24,7 +25,9 @@ export default class Persistence<T extends object> {
     this.#state.addListener("change", this.onStateChange)
 
     this.onBrowserStorageUpdate = this.onBrowserStorageUpdate.bind(this)
-    browser.storage.sync.onChanged.addListener(this.onBrowserStorageUpdate)
+    if (this.#state.environment !== StateEnvironment.Offscreen) {
+      browser.storage.sync.onChanged.addListener(this.onBrowserStorageUpdate)
+    }
 
     this.fetchStateFromStorage()
   }
@@ -39,6 +42,13 @@ export default class Persistence<T extends object> {
   }
 
   private onStateChange(key: keyof T, source: ChangeSource) {
+    if (this.#state.environment === StateEnvironment.Offscreen) {
+      this.#debug(
+        "Offscreen environment: Skipping storage update onStateChange"
+      )
+      return
+    }
+
     if (source !== "user" || !this.#state.keyIsPersistent(key)) return
 
     // Filter out keys that are not persistent
@@ -56,13 +66,23 @@ export default class Persistence<T extends object> {
   }
 
   async fetchStateFromStorage(): Promise<void> {
-    const state = await browser.storage.sync.get(this.#STORAGE_KEY)
-    this.#debug("fetchStateFromStorage", state)
+    try {
+      if (this.#state.environment === StateEnvironment.Offscreen) {
+        this.#debug("Offscreen environment: Skipping fetch from storage")
+        return Promise.resolve()
+      }
 
-    if (state[this.#STORAGE_KEY]) {
-      this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
+      const state = await browser.storage.sync.get(this.#STORAGE_KEY)
+      this.#debug("fetchStateFromStorage", state)
+
+      if (state[this.#STORAGE_KEY]) {
+        this.#handlePersistentDataUpdate(state[this.#STORAGE_KEY])
+      }
+    } catch (error) {
+      this.#debug("Error in fetchStateFromStorage:", error)
+    } finally {
+      this.#state.increaseReadyProgress()
     }
-    this.#state.increaseReadyProgress()
   }
 
   #handlePersistentDataUpdate(stateString: string) {
@@ -78,7 +98,10 @@ export default class Persistence<T extends object> {
 
   destroy() {
     this.#state.removeListener("change", this.onStateChange)
+    if (this.#state.environment !== StateEnvironment.Offscreen) {
+      browser.storage.sync.onChanged.removeListener(this.onBrowserStorageUpdate)
+    }
     this.#state = null
-    browser.storage.sync.onChanged.removeListener(this.onBrowserStorageUpdate)
+    this.#debug("Persistence module destroyed")
   }
 }

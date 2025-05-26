@@ -21,9 +21,21 @@ export type SetupConfig<T> = {
  */
 export type SyncMessage<T> = {
   type: "sync"
-  action: "push" | "pull" | "tabId"
-  data: T
+  action:
+    | "push"
+    | "pull"
+    | "tabId"
+    | "pushStateOffscreen"
+    | "pullStateOffscreen"
+  data?: T
+  payload?: T
   tabId: number
 }
 
-export type ChangeSource = "user" | "storage" | "sync"
+export type ChangeSource =
+  | "user"
+  | "content"
+  | "background"
+  | "storage"
+  | "sync"
+  | "offscreen"
