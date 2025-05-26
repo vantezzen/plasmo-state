@@ -1,6 +1,4 @@
-import getState from "~shared"
-
-import { StateEnvironment } from "../../src"
+import getState, { StateEnvironment } from "~shared" // Consolidated import
 
 const state = getState(StateEnvironment.Offscreen)
 state.addListener("change", () => {

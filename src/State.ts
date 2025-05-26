@@ -4,6 +4,7 @@ import EventEmitter from "events"
 import Persistence from "./Persistence"
 import ContentSyncModule from "./Sync/ContentSyncModule"
 import ExtensionSyncModule from "./Sync/ExtensionSyncModule"
+import OffscreenSyncModule from "./Sync/OffscreenSyncModule"
 import type SyncModule from "./Sync/SyncModule"
 import { getCurrentTabId } from "./getTabId"
 import { ChangeSource, SetupConfig, StateEnvironment } from "./types"
@@ -75,10 +76,13 @@ export default class State<T extends object> extends EventEmitter {
   #createSyncModule(): SyncModule<T> {
     if (
       this.#environment === StateEnvironment.Background ||
-      this.#environment === StateEnvironment.Popup ||
-      this.#environment === StateEnvironment.Offscreen
+      this.#environment === StateEnvironment.Popup
     ) {
       return new ExtensionSyncModule(this)
+    }
+    if (this.#environment === StateEnvironment.Offscreen) {
+      // @ts-expect-error TODO: OffscreenSyncModule may not have all the same methods as ExtensionSyncModule
+      return new OffscreenSyncModule(this)
     }
     return new ContentSyncModule(this)
   }
