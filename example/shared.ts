@@ -16,13 +16,16 @@ export type State = {
 
   // State key that doesn't have a default value
   withoutDefault?: string
+
+  offscreenCounter: number
 }
 
 // State that will be used by default and as long as no data has been provided by other environments yet
 const initialState: State = {
   perTab: 0,
   persistent: "Persistent",
-  background: 0
+  background: 0,
+  offscreenCounter: 0
 }
 
 export default function getState(environment: StateEnvironment) {

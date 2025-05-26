@@ -36,6 +36,9 @@ function IndexPopup() {
           state.persistent = e.target.value
         }}
       />
+
+      <h2>Offscreen Page counter</h2>
+      <p>{state.offscreenCounter}</p>
     </div>
   )
 }

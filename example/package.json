@@ -8,7 +8,8 @@
   },
   "manifest": {
     "permissions": [
-      "storage"
+      "storage",
+      "offscreen"
     ],
     "browser_specific_settings": {
       "gecko": {
